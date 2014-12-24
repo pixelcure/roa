@@ -1,14 +1,14 @@
 # As Yeoman assumes the usage of Bower and Grunt, ignore the below:
 bower_components
 node_modules
+wp-content/themes/roa/node_modules
 
 # Ignore automatically generated cruft
 *.log
 .sass-cache
 
 # Ignore config
-local-config.php
-
+wp-config.php
 
 # Operating system files
 .Spotlight-V100

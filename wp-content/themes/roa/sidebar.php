@@ -1,7 +1,11 @@
-<aside id="page-sidebar">
-	<ul>
-		<?php if ( ! dynamic_sidebar( 'main-sidebar' ) ) : ?>
+<?php
+/**
+ * The template for displaying the sidebar.
+ *
+ * @package WordPress
+ * @subpackage Sandbox
+ * @since Sandbox 2.0
+ */
+?>
 
-		<?php endif; ?>
-	</ul>
-</aside>
+<?php dynamic_sidebar('default'); ?>

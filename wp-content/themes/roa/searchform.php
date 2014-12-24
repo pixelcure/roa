@@ -1,9 +1,15 @@
-<form action="<?php bloginfo('siteurl'); ?>" class="search-form">
-    <div class="input-wrap search">
-        <label for="input-s" class="screen-reader-text">Search for:</label>
-        <input type="search" id="input-s" name="s" />
-    </div>
-    <div class="input-wrap submit">
-        <input type="submit" value="Search" class="button" />
-	</div>
+<?php
+/**
+ * The template for displaying search forms
+ *
+ * @package WordPress
+ * @subpackage Sandbox
+ * @since Sandbox 2.0
+ */
+?>
+
+<form method="get" id="searchform" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+	<label for="s" class="assistive-text">Search</label>
+	<input type="text" class="field" name="s" id="s" placeholder="Search" />
+	<input type="submit" class="submit" name="submit" id="searchsubmit" value="Search" />
 </form>

@@ -1,0 +1,163 @@
+  ////////////////////////////////
+ // FOOTER //////////////////////
+////////////////////////////////
+
+footer {
+	background: $footerBG;
+	border-top: 30px solid $footerTopStrokeColor;
+	padding-bottom: 50px;
+	overflow: hidden;
+
+	.footer-inner {
+		color: $white;
+
+		.left-content {
+			border-right: 1px solid $black;
+
+
+			@include max-screen(640px){
+				border-right: 0;
+				border-bottom: 1px solid $black;
+				float: none;
+				transition: .4s;
+				width: 100%;
+			}
+
+			.logo-container {
+				padding: 35px 0 0;
+				width: percentage(135/460);
+				max-width: 135px;
+				margin-bottom: 25px;
+
+				&:hover {
+					transition: 0.8s;
+					opacity: .4;
+				}
+				
+				img {
+					min-width: 135px;
+				}
+
+				@include max-screen(640px){
+					float: none;
+				}
+			} // End Logo Container
+
+			.address {
+				
+				span {
+					display: block;
+					padding-bottom: 5px;
+				}
+
+			}
+
+			.social {
+				overflow: hidden;
+
+				ul {
+					margin: 25px 0;
+					overflow: hidden;
+					padding: 0;
+					
+					li {
+						float: left;
+						list-style: none;
+						margin-right: 25px;
+						a {
+							color: $black;
+							@include font-size(26px);
+							&:hover {
+								color: $white;
+								transition: .8s;
+							}
+						}
+					}
+				}
+			}// End Social
+		} // End Left Content
+		
+		.footer-nav-container {
+			padding: 35px 0;
+			margin-right: 0;
+
+			@include max-screen(640px){
+				float: none;
+				margin: 0 auto;
+				transition: .4s;
+				width: 100%;
+			}
+
+			.nav {
+				overflow: hidden;
+
+				ul {
+					float: right;
+					list-style: none; 
+					margin: 0;
+					
+					@include max-screen(640px){
+						padding: 0;
+					}
+					
+					li {
+						float: left;
+						margin-right: 10px;
+						
+						ul { display: none; }
+						
+						a {
+							color: $white;
+							font-weight: bold;
+							&:hover {
+								color: $black;
+							}
+						}
+
+						&:after {
+							content : "|";
+							padding-left: 10px;
+						}
+
+						&:last-child:after {
+							content : "";
+							margin-right: 0;
+						}
+					}
+				}
+			} // end nav
+
+			.equation {
+				margin-top: 40px;
+				
+				@include max-screen(640px){
+					transition: .4s;
+					width: 100%;
+				}
+
+				span {
+					display: block;
+					@include font-size(18px);
+					font-style: italic;
+					text-align: right;
+					padding-bottom: 10px;
+
+					@include max-screen(640px){
+						@include font-size(14px);
+						transition: .4s;
+					}
+					
+					&.quality { padding-bottom: 5px; }
+
+					&.process {
+						border-bottom: 2px solid $white;
+						margin-bottom: 10px;
+					}
+				}
+			} // End Equation
+
+		} // End Nav Container
+	
+	} // End Footer Inner
+
+} // End Footer

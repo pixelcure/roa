@@ -1,0 +1,228 @@
+  ////////////////////////////////
+ // HERO ////////////////////////
+////////////////////////////////
+
+.hero-container {
+
+	background: url('../../images/hero-bg.jpg') no-repeat top center;
+	border-bottom: 10px solid $strokeBG;
+	@include background-size(cover);
+	min-height: 725px;
+
+	.hero-inner {
+		height: 100%;
+		margin-top: 0;
+		margin-bottom: 0;
+
+		.tagline-container {
+			padding: 25px 0;
+			margin-top: 100px;
+
+			@include max-screen(1015px){
+				margin-top: 115px;
+				transition: .4s;
+			}		
+
+			@include max-screen(900px){
+				.equation {				
+					float: none;
+					margin: 0 auto;
+					overflow: hidden;
+					transition: .4s;
+				}
+			}
+			
+			@include max-screen(800px){
+				margin-top: 50px;
+
+				.equation {
+					width: 100%;
+				}
+			}
+
+			.circle {
+				background: $white;
+				@include border-radius(100px);
+				height: 180px;
+				width: 180px;
+				
+				@include max-screen(1015px){
+					height: 140px;
+					transition: .4s;
+					width: 140px;
+				}
+				
+				@include max-screen(825px){
+					@include border-radius(initial);
+					border-right: 10px solid $roaRed;
+					float: none;
+					height: initial;
+					width: 100%;
+				}
+
+				h1 {
+					@include font-size(30px);
+					color: $roaRed;
+					padding: 40px 30px;
+					font-weight: 100;
+					margin: 0;
+					text-align: center;
+
+					@include max-screen(1015px){
+						@include font-size(24px);
+						padding: 25px 20px;
+						transition: .4s;
+					}
+					
+					@include max-screen(825px){
+						padding: 15px 25px;
+					}
+				
+				} // End h1
+
+			} // End Circle
+
+			.operator {
+				color: $white;
+				@include font-size(60px);
+				margin: 40px 25px 0 25px;
+				text-align: center;
+
+				@include max-screen(1015px){
+					margin-top: 20px;
+					transition: .4s;
+				}		
+				@include max-screen(825px){
+					display: block;
+					float: none;
+					margin: -11px 0 0 0;
+				}		
+				
+				&.last {
+					margin: 40px 30px 0 0;
+					@include max-screen(1015px){
+						margin-top: 20px;
+						transition: .4s;
+					}
+					
+					@include max-screen(825px){
+						margin: -11px 0 0 0;
+					}
+				}
+			} // End Operator
+
+			.the-answer {
+				width: percentage(470/960);
+				
+				@include max-screen(900px){
+					float: none;
+					margin: 0 auto;
+					transition: .4s;
+					width: 75%;
+				}
+				@include max-screen(825px){
+					margin: 0 auto;
+					width: 100%;
+				}
+				.answer {
+					@include max-screen(825px){
+						margin: 0 auto;
+						width: 100%;
+					}
+	
+					h1 {
+						color: $white;
+						font-weight: 600;
+						@include font-size(40px);
+						margin: 60px 0 35px 0;
+						
+						@include max-screen(1015px){
+							margin-top: 40px;
+							transition: .4s;
+						}
+						
+						@include max-screen(913px){
+							@include font-size(34px);
+							transition: .4s;
+						}
+						
+						@include max-screen(900px){
+							@include font-size(40px);
+							transition: .4s;
+						}		
+						
+						@include max-screen(825px){
+							float: none;
+							margin: 0 auto;
+							text-align: center;
+							width: 100%;
+						}				
+					} // End H1
+					
+					.button {
+						background: $white;
+						border-right: 10px solid $roaRed;
+						color: $roaRed;
+						@include font-size(16px);
+						font-weight: bold;
+						ms-border-top-left-radius: 25px;
+						ms-border-bottom-left-radius: 25px;
+						moz-border-top-left-radius: 25px;
+						moz-border-bottom-left-radius: 25px;
+						-webkit-border-top-left-radius: 25px;
+						-webkit-border-bottom-left-radius: 25px;
+						float: right;
+						padding-right: 30px;
+						text-align: right;
+						width: percentage(270/470);
+
+						&:hover {
+							border-color: $black;
+							color: $black;
+							ms-border-top-left-radius: 0px;
+							ms-border-bottom-left-radius: 0px;
+							moz-border-top-left-radius: 0px;
+							moz-border-bottom-left-radius: 0px;
+							-webkit-border-top-left-radius: 0px;
+							-webkit-border-bottom-left-radius: 0px;							
+							transition: .6s;
+						}
+
+						@include max-screen(825px){
+							float: none;
+							margin: 35px auto 0;
+							text-align: center;
+							width: 100%;
+						}
+					} // End Button
+
+				} // End Answer
+			} // End The Answer;
+		} // End Tag Line Container
+	} // End Hero Inner
+
+	.bottom-hero {
+		background: rgba(207, 32, 61, .5);
+		border-right: 10px solid $black;
+		-webkit-border-top-left-radius: 25px;
+		-ms-border-top-left-radius: 25px;
+		moz-border-top-left-radius: 25px;
+		padding: 35px;
+
+		h2 {
+			color: $white;
+			@include font-size(28px);
+			margin: 0 0 20px 0;
+
+			@include max-screen(600px){
+				@include font-size(24px);
+				transition: .4s;
+			}
+		}
+		
+		p {
+			color: $white;
+		}
+	} // Bottom hero
+
+} // End Hero Container

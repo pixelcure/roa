@@ -1,243 +1,349 @@
-module.exports = function(grunt) {
+'use strict';
+var LIVERELOAD_PORT = 35729;
+var SERVER_PORT = 9000;
+var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
+var mountFolder = function (connect, dir) {
+    return connect.static(require('path').resolve(dir));
+};
 
-	// To support SASS/SCSS or Stylus, just install
-	// the appropriate grunt package and it will be automatically included
-	// in the build process, Sass is included by default:
-	//
-	// * for SASS/SCSS support, run `npm install --save-dev grunt-contrib-sass`
-	// * for Stylus/Nib support, `npm install --save-dev grunt-contrib-stylus`
+// # Globbing
+// for performance reasons we're only matching one level down:
+// 'test/spec/{,*/}*.js'
+// use this if you want to match all subfolders:
+// 'test/spec/**/*.js'
+// templateFramework: 'lodash'
 
-	var npmDependencies = require('./package.json').devDependencies;
-	var hasSass = npmDependencies['grunt-contrib-sass'] !== undefined;
-	var hasStylus = npmDependencies['grunt-contrib-stylus'] !== undefined;
+module.exports = function (grunt) {
+    // show elapsed time at the end
+    require('time-grunt')(grunt);
+    // load all grunt tasks
+    require('load-grunt-tasks')(grunt);
 
-	grunt.initConfig({
+    // configurable paths
+    var yeomanConfig = {
+        app: 'app',
+        dist: 'dist'
+    };
 
-		// Watches for changes and runs tasks
-		watch : {
-			sass : {
-				files : ['scss/**/*.scss'],
-				tasks : (hasSass) ? ['sass:dev'] : null,
-				options : {
-					livereload : true
-				}
-			},
-			stylus : {
-				files : ['stylus/**/*.styl'],
-				tasks : (hasStylus) ? ['stylus:dev'] : null,
-				options: {
-					livereload : true
-				}
-			},
-			js : {
-				files : ['js/**/*.js'],
-				tasks : ['jshint'],
-				options : {
-					livereload : true
-				}
-			},
-			php : {
-				files : ['**/*.php'],
-				options : {
-					livereload : true
-				}
-			}
-		},
+    grunt.loadNpmTasks('grunt-contrib-compass');
+    
+    grunt.initConfig({
+        
+        yeoman: yeomanConfig,
+        
+        watch: {
+            options: {
+                nospawn: true,
+                livereload: true
+            },
+            compass: {
+                files: '<%= yeoman.app %>/styles/sass/**/*.scss',
+                tasks: ['compass:dev']
+            },            
+            livereload: {
+                options: {
+                    livereload: LIVERELOAD_PORT
+                },
+                files: [
+                    '<%= yeoman.app %>/*.{html,php}',
+                    '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
+                    '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
+                    '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
+                    '<%= yeoman.app %>/scripts/templates/*.{ejs,mustache,hbs}',
+                    'test/spec/**/*.js'
+                ]
+            },
+            test: {
+                files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/**/*.js'],
+                tasks: ['test:true']
+            }
+        },
 
-		// JsHint your javascript
-		jshint : {
-			all : ['js/*.js', '!js/modernizr.js', '!js/*.min.js', '!js/vendor/**/*.js'],
-			options : {
-				browser: true,
-				curly: false,
-				eqeqeq: false,
-				eqnull: true,
-				expr: true,
-				immed: true,
-				newcap: true,
-				noarg: true,
-				smarttabs: true,
-				sub: true,
-				undef: false
-			}
-		},
+        connect: {
+            options: {
+                port: SERVER_PORT,
+                // change this to '0.0.0.0' to access the server from outside
+                hostname: 'localhost'
+            },
+            livereload: {
+                options: {
+                    middleware: function (connect) {
+                        return [
+                            lrSnippet,
+                            mountFolder(connect, '.tmp'),
+                            mountFolder(connect, yeomanConfig.app)
+                        ];
+                    }
+                }
+            },
+            test: {
+                options: {
+                    port: 9001,
+                    middleware: function (connect) {
+                        return [
+                            lrSnippet,
+                            mountFolder(connect, '.tmp'),
+                            mountFolder(connect, 'test'),
+                            mountFolder(connect, yeomanConfig.app)
+                        ];
+                    }
+                }
+            },
+            dist: {
+                options: {
+                    middleware: function (connect) {
+                        return [
+                            mountFolder(connect, yeomanConfig.dist)
+                        ];
+                    }
+                }
+            }
+        },
 
-		// Dev and production build for sass
-		sass : {
-			production : {
-				files : [
-					{
-						src : ['**/*.scss', '!**/_*.scss'],
-						cwd : 'scss',
-						dest : 'css',
-						ext : '.css',
-						expand : true
-					}
-				],
-				options : {
-					style : 'compressed'
-				}
-			},
-			dev : {
-				files : [
-					{
-						src : ['**/*.scss', '!**/_*.scss'],
-						cwd : 'scss',
-						dest : 'css',
-						ext : '.css',
-						expand : true
-					}
-				],
-				options : {
-					style : 'expanded'
-				}
-			}
-		},
+        open: {
+            server: {
+                path: 'http://localhost:<%= connect.options.port %>'
+            },
+            test: {
+                path: 'http://localhost:<%= connect.test.options.port %>'
+            }
+        },
 
-		// Dev and production build for stylus
-		stylus : {
-			production : {
-				files : [
-					{
-						src : ['**/*.styl', '!**/_*.styl'],
-						cwd : 'stylus',
-						dest : 'css',
-						ext: '.css',
-						expand : true
-					}
-				],
-				options : {
-					compress : true
-				}
-			},
-			dev : {
-				files : [
-					{
-						src : ['**/*.styl', '!**/_*.styl'],
-						cwd : 'stylus',
-						dest : 'css',
-						ext: '.css',
-						expand : true
-					}
-				],
-				options : {
-					compress : false
-				}
-			},
-		},
+        clean: {
+            dist: ['.tmp', '<%= yeoman.dist %>/*'],
+            server: '.tmp'
+        },
 
-		// Bower task sets up require config
-		bower : {
-			all : {
-				rjsConfig : 'js/global.js'
-			}
-		},
+        jshint: {
+            options: {
+                jshintrc: '.jshintrc',
+                reporter: require('jshint-stylish')
+            },
+            all: [
+                'Gruntfile.js',
+                '<%= yeoman.app %>/scripts/{,*/}*.js',
+                '!<%= yeoman.app %>/scripts/vendor/*',
+                'test/spec/{,*/}*.js'
+            ]
+        },
 
-		// Require config
-		requirejs : {
-			production : {
-				options : {
-					name : 'global',
-					baseUrl : 'js',
-					mainConfigFile : 'js/global.js',
-					out : 'js/optimized.min.js'
-				}
-			}
-		},
+        requirejs: {
+            dist: {
+                // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
+                options: {
+                    baseUrl: '<%= yeoman.app %>/scripts',
+                    optimize: 'none',
+                    paths: {
+                        'templates': '../../.tmp/scripts/templates',
+                        underscore : '../bower_components/underscore/underscore-min',
+                        jquery: '../bower_components/jquery/jquery.min',
+                        backbone: '../bower_components/backbone/backbone-min',
+                        tweenmax: '../bower_components/gsap/src/minified/TweenMax.min',
+                        scrollmagic: '../bower_components/ScrollMagic/js/jquery.scrollmagic.min',
+                        mousewheel: '../bower_components/jquery-mousewheel/jquery.mousewheel'
+                    },
+                    // TODO: Figure out how to make sourcemaps work with grunt-usemin
+                    // https://github.com/yeoman/grunt-usemin/issues/30
+                    //generateSourceMaps: true,
+                    // required to support SourceMaps
+                    // http://requirejs.org/docs/errors.html#sourcemapcomments
+                    preserveLicenseComments: false,
+                    useStrict: true,
+                    wrap: true
+                    //uglify2: {} // https://github.com/mishoo/UglifyJS2
+                }
+            }
+        },
 
-		// Image min
-		imagemin : {
-			production : {
-				files : [
-					{
-						expand: true,
-						cwd: 'images',
-						src: '**/*.{png,jpg,jpeg}',
-						dest: 'images'
-					}
-				]
-			}
-		},
+        useminPrepare: {
+            html: '<%= yeoman.app %>/index.html',
+            options: {
+                dest: '<%= yeoman.dist %>'
+            }
+        },
 
-		// SVG min
-		svgmin: {
-			production : {
-				files: [
-					{
-						expand: true,
-						cwd: 'images',
-						src: '**/*.svg',
-						dest: 'images'
-					}
-				]
-			}
-		}
+        usemin: {
+            html: ['<%= yeoman.dist %>/{,*/}*.html'],
+            css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
+            options: {
+                dirs: ['<%= yeoman.dist %>']
+            }
+        },
 
-	});
+        imagemin: {
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>/images',
+                    src: '{,*/}*.{png,jpg,jpeg}',
+                    dest: '<%= yeoman.dist %>/images'
+                }]
+            }
+        },
 
-	// Default task
-	grunt.registerTask('default', ['watch']);
+        cssmin: {
+            dist: {
+                files: {
+                    '<%= yeoman.dist %>/styles/main.css': [
+                        '.tmp/styles/{,*/}*.css',
+                        '<%= yeoman.app %>/styles/{,*/}*.css'
+                    ]
+                }
+            }
+        },
 
-	// Build task
-	grunt.registerTask('build', function() {
-		var arr = ['jshint'];
+        htmlmin: {
+            dist: {
+                options: {
+                    /*removeCommentsFromCDATA: true,
+                    // https://github.com/yeoman/grunt-usemin/issues/44
+                    //collapseWhitespace: true,
+                    collapseBooleanAttributes: true,
+                    removeAttributeQuotes: true,
+                    removeRedundantAttributes: true,
+                    useShortDoctype: true,
+                    removeEmptyAttributes: true,
+                    removeOptionalTags: true*/
+                },
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>',
+                    src: '*.html',
+                    dest: '<%= yeoman.dist %>'
+                }]
+            }
+        },
 
-		if (hasSass) {
-			arr.push('sass:production');
-		}
+        copy: {
+            dist: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '<%= yeoman.app %>',
+                    dest: '<%= yeoman.dist %>',
+                    src: [
+                        '*.{ico,txt}',
+                        '.htaccess',
+                        'images/{,*/}*.{webp,gif}',
+                        'styles/fonts/{,*/}*.*',
+                    ]
+                }]
+            }
+        },
 
-		if (hasStylus) {
-			arr.push('stylus:production');
-		}
+        bower: {
+            all: {
+                rjsConfig: '<%= yeoman.app %>/scripts/require.config.js'
+            }
+        },
 
-		arr.push('imagemin:production', 'svgmin:production', 'requirejs:production');
+        rev: {
+            dist: {
+                files: {
+                    src: [
+                        '<%= yeoman.dist %>/scripts/{,*/}*.js',
+                        '<%= yeoman.dist %>/styles/{,*/}*.css',
+                        '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
+                        '/styles/fonts/{,*/}*.*',
+                    ]
+                }
+            }
+        },
 
-		return arr;
-	});
+        compass: {
+            dist: {
+                options: {
+                    sassDir: '<%= yeoman.app %>/styles/sass',
+                    imageDir: '<%= yeoman.dist %>/images',
+                    cssDir: '<%= yeoman.dist %>/styles',
+                    outputStyle: 'compressed',
+                    fontsDir: '<%= yeoman.dist %>/fonts',
+                    //relativeAssets: true,
+                    noLineComments: true
+                }
+            },
+            dev: {
+                options: {
+                    sassDir: '<%= yeoman.app %>/styles/sass',
+                    imagesDir: '<%= yeoman.app %>/images',
+                    cssDir: '<%= yeoman.app %>/styles',
+                    fontsDir: '<%= yeoman.app %>/fonts'
+                }
+            }
+        } 
 
-	// Template Setup Task
-	grunt.registerTask('setup', function() {
-		var arr = [];
+    });
 
-		if (hasSass) {
-			arr.push['sass:dev'];
-		}
+    grunt.registerTask('createDefaultTemplate', function () {
+        grunt.file.write('.tmp/scripts/templates.js', 'this.JST = this.JST || {};');
+    });
 
-		if (hasStylus) {
-			arr.push('stylus:dev');
-		}
+    grunt.registerTask('server', function () {
+        grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
+        grunt.task.run(['serve:' + target]);
+    });
 
-		arr.push('bower-install');
-	});
+    grunt.registerTask('serve', function (target) {
+        if (target === 'dist') {
+            return grunt.task.run(['build', 'open:server', 'connect:dist:keepalive']);
+        }
 
-	// Load up tasks
-	if (hasSass) {
-		grunt.loadNpmTasks('grunt-contrib-sass');
-	}
+        if (target === 'test') {
+            return grunt.task.run([
+                'clean:server',
+                'createDefaultTemplate',
+                'connect:test',
+                'open:test',
+                'watch:livereload'
+            ]);
+        }
 
-	if (hasStylus) {
-		grunt.loadNpmTasks('grunt-contrib-stylus');
-	}
-	
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-bower-requirejs');
-	grunt.loadNpmTasks('grunt-contrib-requirejs');
-	grunt.loadNpmTasks('grunt-contrib-imagemin');
-	grunt.loadNpmTasks('grunt-svgmin');
+        grunt.task.run([
+            'clean:server',
+            'createDefaultTemplate',
+            'connect:livereload',
+            'open:server',
+            'watch'
+        ]);
+    });
 
-	// Run bower install
-	grunt.registerTask('bower-install', function() {
-		var done = this.async();
-		var bower = require('bower').commands;
-		bower.install().on('end', function(data) {
-			done();
-		}).on('data', function(data) {
-			console.log(data);
-		}).on('error', function(err) {
-			console.error(err);
-			done();
-		});
-	});
+    grunt.registerTask('test', function (isConnected) {
+        isConnected = Boolean(isConnected);
+        var testTasks = [
+                'clean:server',
+                'createDefaultTemplate',
+                'connect:test',
+                'watch:test'
+            ];
+            
+        if(!isConnected) {
+            return grunt.task.run(testTasks);
+        } else {
+            // already connected so not going to connect again, remove the connect:test task
+            testTasks.splice(testTasks.indexOf('connect:test'), 1);
+            return grunt.task.run(testTasks);
+        }
+    });
 
+    grunt.registerTask('build', [
+        'clean:dist',
+        'compass:dist',        
+        'createDefaultTemplate',
+        'useminPrepare',
+        'requirejs',
+        'imagemin',
+        'htmlmin',
+        'concat',
+        'cssmin',
+        'uglify',
+        'copy',
+        'rev',
+        'usemin'
+    ]);
+
+    grunt.registerTask('default', [
+        // 'jshint',
+        'test',
+        'build'
+    ]);
 };

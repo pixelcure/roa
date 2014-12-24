@@ -1,54 +1,155 @@
 <?php
-add_action('wp_enqueue_scripts', 'theme_enqueue_scripts');
-function theme_enqueue_scripts(){
+/*
+ * @package WordPress
+ * @subpackage Sandbox
+ * @since Sandbox 2.0
+ */
 
-	wp_register_script('modernizr', get_bloginfo('template_url') . '/js/modernizr.js');
-	wp_enqueue_script('modernizr');
+/************************************************************************************/
+// initialization
+/************************************************************************************/
+add_action( 'after_setup_theme', 'sandbox_setup' );
 
-	wp_register_script('require', get_bloginfo('template_url') . '/js/vendor/requirejs/require.js', array(), false, true);
-	wp_enqueue_script('require');
+if ( ! function_exists( 'sandbox_setup' ) ):
 
-	wp_register_script('global', get_bloginfo('template_url') . '/js/global.js', array('require'), false, true);
-	wp_enqueue_script('global');
+function sandbox_setup() {
 
-	wp_register_script('livereload', 'http://roa.local:35729/livereload.js?snipver=1', null, false, true);
-	wp_enqueue_script('livereload');
+	// set a content width if you haven't in the Dashboard
+	if ( ! isset( $content_width ) ) $content_width = 580;
 
-	wp_enqueue_style('global', get_bloginfo('template_url') . '/css/global.css');
-}
+	// remove version # from RSS
+	add_filter('the_generator', 'sandbox_hide_rss_version');
 
-//Add Featured Image Support
-add_theme_support('post-thumbnails');
+	// post thumbnails & custom sizes
+	add_theme_support('post-thumbnails', array( 'page', 'post', 'samples') );
 
-// Clean up the <head>
-function removeHeadLinks() {
-	remove_action('wp_head', 'rsd_link');
-	remove_action('wp_head', 'wlwmanifest_link');
-}
-add_action('init', 'removeHeadLinks');
-remove_action('wp_head', 'wp_generator');
+  // featured image support
+  add_theme_support( 'post-thumbnails' );
 
-function register_menus() {
-	register_nav_menus(
-		array(
-			'main-nav' => 'Main Navigation',
-			'secondary-nav' => 'Secondary Navigation',
-			'sidebar-menu' => 'Sidebar Menu'
-		)
-	);
-}
-add_action( 'init', 'register_menus' );
+  // theme support for feed links
+	add_theme_support( 'automatic-feed-links' );
 
-function register_widgets(){
+	// post formats
+	add_theme_support( 'post-formats', array('aside','gallery','audio','video','quote','image','chat') );
 
-	register_sidebar( array(
-		'name' => __( 'Sidebar' ),
-		'id' => 'main-sidebar',
-		'before_widget' => '<li id="%1$s" class="widget-container %2$s">',
-		'after_widget' => '</li>',
-		'before_title' => '<h3 class="widget-title">',
-		'after_title' => '</h3>',
+	// enable the_excerpt for pages
+	add_post_type_support('page', 'excerpt');
+
+	// hide version #
+	remove_action('wp_head', 'wp_generator');
+
+	// register scripts
+	if (!is_admin()) {
+		// new scripts
+		wp_register_script('sandbox.common', get_bloginfo('template_url').'/scripts/common.js', array('jquery'), '1.0', true);
+		// global scripts
+		wp_enqueue_script('jquery');
+		//wp_enqueue_script('sandbox.common');
+	}
+
+	// register scripts for the Dashboard
+	if (is_admin()) {
+		// new scripts
+		wp_register_script('dashboard.custom', get_bloginfo('template_url').'/scripts/dashboard.js', array('jquery'), '1.0', true);
+		// global scripts
+		wp_enqueue_script('dashboard.custom');
+	}
+
+	// register nav menus
+	register_nav_menus( array(
+		'primary' => 'Primary Navigation',
+		'utility' => 'Utility Navigation'
 	) );
+}
+endif;
 
-}//end register_widgets()
-add_action( 'widgets_init', 'register_widgets' );
+/************************************************************************************/
+// include extra functions
+/************************************************************************************/
+include_once('includes/functions-deactivate.php');
+include_once('includes/functions-extend.php');
+include_once('includes/functions-utility.php');
+
+/************************************************************************************/
+// include post types
+/************************************************************************************/
+include_once('includes/types/meta.php');
+include_once('includes/types/type-pages.php');
+include_once('includes/types/type-posts.php');
+include_once('includes/types/type-sample.php');
+
+/************************************************************************************/
+// include options pages
+/************************************************************************************/
+include_once('includes/options/global.php');
+include_once('includes/options/slider.php');
+
+/************************************************************************************/
+// include widgets
+/************************************************************************************/
+include_once('includes/widgets/widget-sample.php');
+
+/************************************************************************************/
+// include sidebars
+/************************************************************************************/
+function sandbox_widgets_init() {
+	register_sidebar( array(
+		'name' => __( 'Sidebar', 'sandbox' ),
+		'id' => 'default',
+		'description' => __( 'The default left sidebar for this theme.', 'sandbox' ),
+		'before_widget' => '<div id="%1$s" class="widget %2$s">',
+		'after_widget' => '</div>',
+		'before_title' => '<h4>',
+		'after_title' => '</h4>'
+	) );
+	// this displays a sidebar for each custom sidebar assigned to a page or post
+	if(function_exists('register_sidebar')){
+		foreach(get_custom_sidebars() as $i=>$sb){
+			register_sidebar(array(
+				'name'=>$sb[meta_value],
+				'id' => strtolower(str_replace(" ", "", $sb[meta_value])),
+				'before_widget' => '<div class="widget %2$s" id="%1$s"><div class="top"></div><div class="innards">',
+				'after_widget' => '</div><div class="bottom"></div></div>',
+				'before_title' => '<h3>',
+				'after_title' => '</h3>',
+			));
+		}
+	}
+}
+add_action( 'widgets_init', 'sandbox_widgets_init' );
+
+/************************************************************************************/
+// Intro Custom Posttype, Recipe Custom Post Type
+/************************************************************************************/
+
+// add_action( 'init', 'homeIntro' );
+
+// function homeIntro() {
+// 	register_post_type( 'homeIntroPostType',
+// 		array(
+// 			'labels' => array(
+// 				'name' => __( 'Introductions' ),
+// 				'singular_name' => __( 'Intro Paragraph' )
+// 			),
+// 			'public' => true,
+// 			'has_archive' => true,
+// 			'rewrite' => array('slug' => 'intros'),
+// 		)
+// 	);
+// }
+
+// add_action( 'init', 'recipeBlurb' );
+
+// function recipeBlurb() {
+// 	register_post_type( 'recipePostType',
+// 		array(
+// 			'labels' => array(
+// 				'name' => __( 'Recipes' ),
+// 				'singular_name' => __( 'Recipe' )
+// 			),
+// 			'public' => true,
+// 			'has_archive' => true,
+// 			'rewrite' => array('slug' => 'recipes'),
+// 		)
+// 	);
+// }

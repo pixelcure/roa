@@ -1,0 +1,38 @@
+@import "compass";
+@import "compass/typography/vertical_rhythm";
+@import "singularitygs";
+@import 'modular-scale';
+
+// Partial Files
+
+@import "0_Utility/**/*";
+@import "1_Core/**/*";
+@import "2_Pieces/**/*";
+@import "3_Components/**/*";
+@import "4_Regions/**/*";
+@import "5_Layouts/**/*";
+@import "6_Core/**/*";
+
+// Box Sizing
+
+* { 
+	@include box-sizing(border-box);
+}
+
+body {
+	background: $siteBG;
+	color: $textColor;
+	font-family: $openSans;
+	@include font-size(12px);
+	line-height: 1.5em;
+}
+
+a {
+	color: $roaRed;
+	text-decoration: none;
+}
+
+h1, h2, h3, h4, h5 {
+	color: $headerColor;
+	line-height: 1.5em;
+}

@@ -1,0 +1,85 @@
+  /////////////////////////////////////////
+ // Components ///////////////////////////
+/////////////////////////////////////////
+section.outer-wrapper.content {
+	background: url('../../images/inner-page-header.jpg') no-repeat top center;
+	margin-bottom: 50px;
+
+	h1.title {
+		color: #FFF;
+		@include font-size(32px); 
+		font-weight: 100;
+		height: 135px;
+		padding-top: 80px;
+		margin: 0;
+	}
+
+	.inner-content {
+		margin-top: 0;
+
+		.sidebar {
+			border-left: 1px solid #EFEFEF;
+			margin: 55px 0 0 35px;
+			padding: 0 0 0 35px;
+			
+			@include max-screen(960px){
+				border-top: 1px solid $roaRed;
+				border-left: 0;
+				margin: 0;
+				padding: 0;
+				transition: .4s;
+				width: 100%;
+			}
+
+			h2:first-child {
+				margin-top: 0;
+				@include max-screen(960px){
+					margin-top: 25px;
+				}
+			}
+
+			ul {
+				list-style: none;
+				padding: 0 0 0 0;
+				
+				ul { display: none; }
+
+				li {
+					background: $roaRed;
+					color: $white;
+					margin: 0 0 5px 0;
+					
+					a {	
+						background: $white;
+						border-bottom: 1px solid $roaRed;
+						color: $black;
+						display: block;
+						padding: 10px;
+
+						&:hover {
+							background: $roaRed;
+							border-bottom: 1px solid $black;
+							color: $white;
+						}
+					} // end a
+				} // end Li
+			} // end side bar nav ul
+
+		} // End Sidebar
+
+		.content {
+			margin: 55px 0 50px;
+			
+			@include max-screen(960px){
+				margin: 35px 0 25px 0;
+				transition: .4s;
+				width: 100%;
+			}
+			
+			h1 {
+				margin-top: 0;
+			}
+		} // End Content
+
+	} // End Inner Content
+} // End Outer Wrapper Content

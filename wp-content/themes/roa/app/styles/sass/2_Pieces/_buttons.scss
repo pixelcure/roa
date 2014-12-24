@@ -1,0 +1,45 @@
+  ////////////////////////////////
+ // BUTTONS  ////////////////////
+////////////////////////////////
+
+[data-role="button"], 
+button, 
+.button {
+
+    background: $buttonBG;
+    color: $buttonColor;
+    cursor: pointer;
+    display: inline-block;
+    @include font-size(16px);
+    // font-weight: bold;
+    padding:10px;
+    text-align: center;
+    width: 100%;
+    &:hover,
+    &:active,
+    &:focus,
+    &:visited{
+        text-decoration:none;
+    }
+
+    &:hover{
+        background: darken($black, 10%);
+        border-right: 10px solid $roaRed;
+        color : $buttonHoverColor;
+        transition: .6s;
+    }
+
+    &:active,
+    &:focus{
+       background: darken($black, 15%);
+       border-right: 10px solid $roaRed;
+       color : $buttonHoverColor;
+       transition: .6s;
+    }
+
+    &::-moz-focus-inner {
+        border: 0;
+        padding: 0;
+    }
+}
+
