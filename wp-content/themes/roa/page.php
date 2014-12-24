@@ -17,8 +17,15 @@ get_header(); ?>
 			      	<?php the_content(); ?>
 	    	</div><!--/ end content -->
 	    	<aside class="sidebar span_3">
-	    		<h2>Cool Sidebar for Content/Social Media</h2>
-	    		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam nemo optio molestiae eius dolor id laborum quas a exercitationem eaque sapiente aliquam adipisci saepe provident cumque quo sed enim rerum.</p>
+		      <?php
+		        $innerSideBarArgs = array( 'post_type' => 'innerSideBar', 'posts_per_page' => 1 );
+		        $innerSideBarLoop = new WP_Query( $innerSideBarArgs );
+		        while ( $innerSideBarLoop->have_posts() ) : $innerSideBarLoop->the_post();
+		      ?>
+				<?php the_content(); ?>
+		      <?php
+		        endwhile;
+		      ?>
 	    	</aside><!-- / end side bar -->
     	</div><!-- / end inner content -->
     </section><!-- / end inner wrapper -->

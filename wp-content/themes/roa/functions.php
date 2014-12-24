@@ -119,37 +119,122 @@ function sandbox_widgets_init() {
 add_action( 'widgets_init', 'sandbox_widgets_init' );
 
 /************************************************************************************/
-// Intro Custom Posttype, Recipe Custom Post Type
+// Hero Custom Posttype
 /************************************************************************************/
 
-// add_action( 'init', 'homeIntro' );
+add_action( 'init', 'heroCustom' );
 
-// function homeIntro() {
-// 	register_post_type( 'homeIntroPostType',
-// 		array(
-// 			'labels' => array(
-// 				'name' => __( 'Introductions' ),
-// 				'singular_name' => __( 'Intro Paragraph' )
-// 			),
-// 			'public' => true,
-// 			'has_archive' => true,
-// 			'rewrite' => array('slug' => 'intros'),
-// 		)
-// 	);
-// }
+function heroCustom() {
+	register_post_type( 'heroCustom',
+		array(
+			'labels' => array(
+				'name' => __( 'Hero Content' ),
+				'singular_name' => __( 'Content' )
+			),
+			'public' => true,
+			'has_archive' => true,
+			'rewrite' => array('slug' => 'hero-contents'),
+		)
+	);
+}
 
-// add_action( 'init', 'recipeBlurb' );
+/************************************************************************************/
+// Hero Bottom Callout Custom Posttype
+/************************************************************************************/
 
-// function recipeBlurb() {
-// 	register_post_type( 'recipePostType',
-// 		array(
-// 			'labels' => array(
-// 				'name' => __( 'Recipes' ),
-// 				'singular_name' => __( 'Recipe' )
-// 			),
-// 			'public' => true,
-// 			'has_archive' => true,
-// 			'rewrite' => array('slug' => 'recipes'),
-// 		)
-// 	);
-// }
+add_action( 'init', 'heroBottomCallOut' );
+
+function heroBottomCallOut() {
+	register_post_type( 'heroBottomCallOut',
+		array(
+			'labels' => array(
+				'name' => __( 'Hero Bottom Callout' ),
+				'singular_name' => __( 'Callout' )
+			),
+			'public' => true,
+			'has_archive' => true,
+			'rewrite' => array('slug' => 'hero-bottom-callouts'),
+		)
+	);
+}
+
+/************************************************************************************/
+// Bottom Callouts Custom Posttype
+/************************************************************************************/
+
+add_action( 'init', 'homeCallOuts' );
+
+function homeCallOuts() {
+	register_post_type( 'homeCallOuts',
+		array(
+			'labels' => array(
+				'name' => __( 'Lower Homepage Callouts' ),
+				'singular_name' => __( 'Callout' )
+			),
+			'public' => true,
+			'has_archive' => true,
+			'rewrite' => array('slug' => 'callouts'),
+		)
+	);
+}
+
+/************************************************************************************/
+// Client Slider Custom Posttype
+/************************************************************************************/
+
+add_action( 'init', 'homePageClientSlider' );
+
+function homePageClientSlider() {
+	register_post_type( 'homePageClientSlider',
+		array(
+			'labels' => array(
+				'name' => __( 'Client Slider' ),
+				'singular_name' => __( 'Slide' )
+			),
+			'public' => true,
+			'has_archive' => true,
+			'rewrite' => array('slug' => 'client-slider-contents'),
+		)
+	);
+}
+
+/************************************************************************************/
+// Testimonials Slider Custom Posttype
+/************************************************************************************/
+
+add_action( 'init', 'testimonials' );
+
+function testimonials() {
+	register_post_type( 'Testimonials',
+		array(
+			'labels' => array(
+				'name' => __( 'Testimonials' ),
+				'singular_name' => __( 'Testimonial' )
+			),
+			'public' => true,
+			'has_archive' => true,
+			'rewrite' => array('slug' => 'testimonials'),
+		)
+	);
+}
+
+/************************************************************************************/
+// Inner Sidebar Custom Posttype
+/************************************************************************************/
+
+add_action( 'init', 'innerSideBar' );
+
+function innerSideBar() {
+	register_post_type( 'innerSidebar',
+		array(
+			'labels' => array(
+				'name' => __( 'Inner Sidebar' ),
+				'singular_name' => __( 'Inner Sidebar' )
+			),
+			'public' => true,
+			'has_archive' => true,
+			'rewrite' => array('slug' => 'sidebars'),
+		)
+	);
+}
+
